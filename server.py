@@ -11,7 +11,11 @@ app = Flask(__name__, static_folder=".", static_url_path="")
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
 client = genai.Client(api_key=API_KEY) if API_KEY else None
+print("AVAILABLE GEMINI MODELS:")
 
+for model in client.models.list():
+    if "generateContent" in (model.supported_actions or []):
+        print(model.name)
 
 @app.route("/")
 def home():
