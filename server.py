@@ -1,4 +1,3 @@
-
 import os
 
 from flask import Flask, request, jsonify, send_from_directory
@@ -11,11 +10,7 @@ app = Flask(__name__, static_folder=".", static_url_path="")
 API_KEY = os.environ.get("GEMINI_API_KEY")
 
 client = genai.Client(api_key=API_KEY) if API_KEY else None
-print("AVAILABLE GEMINI MODELS:")
 
-for model in client.models.list():
-    if "generateContent" in (model.supported_actions or []):
-        print(model.name)
 
 @app.route("/")
 def home():
@@ -40,7 +35,7 @@ def ask_gemini():
 
     try:
         response = client.models.generate_content(
-            model="gemini-3.8-flash",
+            model="gemini-2.5-flash",
             contents=(
                 "You are a helpful educational assistant for an Islamic "
                 "learning application. Give respectful, clear educational "
@@ -54,16 +49,12 @@ def ask_gemini():
         answer = response.text or "No answer was returned."
         return jsonify({"answer": answer})
 
-     except Exception as e:
-        print("GEMINI ERROR:", repr(e), flush=True)
+    except Exception as error:
+        app.logger.exception("Gemini request failed")
         return jsonify({
             "error": "Gemini could not answer right now. Check the server and API key."
         }), 500
 
 
 if __name__ == "__main__":
-    app.run(
-    host="0.0.0.0",
-    port=int(os.environ.get("PORT", 5000)),
-    debug=False
-)
+    app.run(host="127.0.0.1", port=5000, debug=False)
