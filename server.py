@@ -54,11 +54,11 @@ def ask_gemini():
         answer = response.text or "No answer was returned."
         return jsonify({"answer": answer})
 
- except Exception as e:
-    print("GEMINI ERROR:", repr(e), flush=True)
-    return jsonify({
-        "error": "Gemini could not answer right now. Check the server and API key."
-    }), 500
+     except Exception as e:
+        print("GEMINI ERROR:", repr(e), flush=True)
+        return jsonify({
+            "error": "Gemini could not answer right now. Check the server and API key."
+        }), 500
 
 
 if __name__ == "__main__":
