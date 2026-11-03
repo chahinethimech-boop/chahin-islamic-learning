@@ -36,7 +36,7 @@ def ask_gemini():
 
     try:
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
+            model="gemini-3.8-flash",
             contents=(
                 "You are a helpful educational assistant for an Islamic "
                 "learning application. Give respectful, clear educational "
