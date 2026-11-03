@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#151b2e">
+    <title>Chahin Islamic Learning App</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <main class="app">
+
+        <!-- HOME SCREEN -->
+        <section id="home-screen" class="screen active">
+            <header class="top-bar">
+                <span class="brand">☾ CHAHIN</span>
+                <button class="small-button" id="theme-button">☀ Theme</button>
+            </header>
+
+            <div class="home-content">
+                <div class="cat-area">
+                    <div class="cat" id="cat">
+                        <div class="cat-ear left-ear"></div>
+                        <div class="cat-ear right-ear"></div>
+
+                        <div class="cat-head">
+                            <div class="cat-eyes">
+                                <div class="eye"><span class="pupil"></span></div>
+                                <div class="eye"><span class="pupil"></span></div>
+                            </div>
+
+                            <div class="cat-nose"></div>
+                            <div class="cat-mouth"></div>
+
+                            <div class="whiskers left-whiskers">
+                                <i></i><i></i><i></i>
+                            </div>
+                            <div class="whiskers right-whiskers">
+                                <i></i><i></i><i></i>
+                            </div>
+                        </div>
+
+                        <div class="cat-body"></div>
+                    </div>
+                </div>
+
+                <h1 class="main-title">Islamic Learning</h1>
+                <p class="subtitle">Learn, discover and grow every day.</p>
+
+                <div class="menu-grid">
+                    <button class="menu-card" data-screen="quiz-screen">
+                        <span class="card-icon">📚</span>
+                        <span class="card-title">Quiz Mode</span>
+                        <span class="card-description">Test your Islamic knowledge</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="ai-screen">
+                        <span class="card-icon">🤖</span>
+                        <span class="card-title">AI Learning</span>
+                        <span class="card-description">Ask questions with Gemini</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="quran-screen">
+                        <span class="card-icon">📖</span>
+                        <span class="card-title">Quran</span>
+                        <span class="card-description">Read Quran chapters</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="prayer-screen">
+                        <span class="card-icon">🕌</span>
+                        <span class="card-title">Prayer Times</span>
+                        <span class="card-description">View daily prayer times</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="tasbih-screen">
+                        <span class="card-icon">📿</span>
+                        <span class="card-title">Tasbih</span>
+                        <span class="card-description">Keep track of your dhikr</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="daily-screen">
+                        <span class="card-icon">✨</span>
+                        <span class="card-title">Daily Knowledge</span>
+                        <span class="card-description">Discover something new</span>
+                    </button>
+
+                    <button class="menu-card" data-screen="settings-screen">
+                        <span class="card-icon">⚙️</span>
+                        <span class="card-title">Settings</span>
+                        <span class="card-description">Customize your app</span>
+                    </button>
+
+                    <button class="menu-card exit-card" id="exit-button">
+                        <span class="card-icon">✕</span>
+                        <span class="card-title">Exit</span>
+                        <span class="card-description">Close the application</span>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- QUIZ SCREEN -->
+        <section id="quiz-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>📚 Islamic Quiz</h2>
+
+            <div class="panel">
+                <div class="quiz-info">
+                    <span id="question-number">Question 1</span>
+                    <span id="quiz-score">Score: 0</span>
+                </div>
+
+                <div class="progress-track">
+                    <div id="quiz-progress" class="progress-fill"></div>
+                </div>
+
+                <h3 id="quiz-question">Your question will appear here.</h3>
+                <div id="quiz-answers" class="answer-list"></div>
+                <p id="quiz-feedback" class="feedback"></p>
+
+                <button id="next-question" class="primary-button" disabled>
+                    Next Question
+                </button>
+                <button id="retry-quiz" class="secondary-button hidden">
+                    Try Again
+                </button>
+            </div>
+        </section>
+
+        <!-- AI SCREEN -->
+        <section id="ai-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>🤖 AI Learning</h2>
+
+            <div class="panel">
+                <p>Ask a question and learn with Gemini AI.</p>
+                <textarea id="ai-question"
+                    placeholder="Write your question here..."></textarea>
+
+                <button id="ask-ai" class="primary-button">
+                    Ask Gemini
+                </button>
+
+                <div id="ai-loading" class="hidden">Thinking...</div>
+                <div id="ai-answer" class="ai-answer">
+                    Your answer will appear here.
+                </div>
+            </div>
+        </section>
+
+        <!-- QURAN SCREEN -->
+        <section id="quran-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>📖 Quran</h2>
+
+            <div class="panel">
+                <label for="surah-number">Surah number (1–114)</label>
+                <input id="surah-number" type="number" min="1" max="114" value="1">
+
+                <button id="load-surah" class="primary-button">
+                    Load Surah
+                </button>
+
+                <h3 id="surah-name"></h3>
+                <div id="quran-content" class="quran-content">
+                    Choose a Surah to begin.
+                </div>
+            </div>
+        </section>
+
+        <!-- PRAYER TIMES SCREEN -->
+        <section id="prayer-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>🕌 Prayer Times</h2>
+
+            <div class="panel">
+                <label for="city">City</label>
+                <input id="city" type="text" placeholder="Example: Tunis">
+
+                <label for="country">Country</label>
+                <input id="country" type="text" value="Tunisia">
+
+                <button id="load-prayers" class="primary-button">
+                    Get Prayer Times
+                </button>
+
+                <div id="prayer-results" class="prayer-list">
+                    Enter your city to view prayer times.
+                </div>
+            </div>
+        </section>
+
+        <!-- TASBIH SCREEN -->
+        <section id="tasbih-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>📿 Digital Tasbih</h2>
+
+            <div class="panel tasbih-panel">
+                <p>Keep track of your dhikr.</p>
+
+                <div id="tasbih-count" class="tasbih-count">0</div>
+
+                <button id="tasbih-add" class="tasbih-button">
+                    + Count
+                </button>
+
+                <button id="tasbih-reset" class="secondary-button">
+                    Reset
+                </button>
+            </div>
+        </section>
+
+        <!-- DAILY KNOWLEDGE SCREEN -->
+        <section id="daily-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>✨ Daily Knowledge</h2>
+
+            <div class="panel">
+                <div id="daily-fact">
+                    Discover a new piece of Islamic knowledge.
+                </div>
+
+                <button id="new-fact" class="primary-button">
+                    Show Another
+                </button>
+            </div>
+        </section>
+
+        <!-- SETTINGS SCREEN -->
+        <section id="settings-screen" class="screen">
+            <button class="back-button" data-home>← Back to menu</button>
+            <h2>⚙️ Settings</h2>
+
+            <div class="panel">
+                <label for="language-select">Language</label>
+                <select id="language-select">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                </select>
+
+                <label for="theme-select">Appearance</label>
+                <select id="theme-select">
+                    <option value="dark">Dark</option>
+                    <option value="light">Light</option>
+                </select>
+            </div>
+        </section>
+
+    </main>
+</body>
+</html>
