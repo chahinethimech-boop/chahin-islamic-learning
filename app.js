@@ -10,7 +10,6 @@ const translations = {
         themeDark: "☀ Theme",
         title: "Islamic Learning",
         subtitle: "Learn, discover and grow every day.",
-
         quiz: "Quiz Mode",
         quizDesc: "Test your Islamic knowledge",
         ai: "AI Learning",
@@ -418,7 +417,6 @@ function t(key) {
     return translations[currentLanguage][key];
 }
 
-
 /* =================================
    APPLY LANGUAGE
 ================================= */
@@ -429,6 +427,12 @@ function applyLanguage() {
     document.documentElement.lang = currentLanguage;
     document.documentElement.dir =
         currentLanguage === "ar" ? "rtl" : "ltr";
+
+    const languageSelect = document.getElementById("language-select");
+
+    if (languageSelect) {
+        languageSelect.value = currentLanguage;
+    }
 
     document.getElementById("theme-button").textContent = lang.theme;
 
@@ -449,11 +453,13 @@ function applyLanguage() {
     ];
 
     cards.forEach((card, index) => {
+        if (!cardTranslations[index]) return;
+
         const title = card.querySelector(".card-title");
         const description = card.querySelector(".card-description");
 
-        title.textContent = cardTranslations[index][0];
-        description.textContent = cardTranslations[index][1];
+        if (title) title.textContent = cardTranslations[index][0];
+        if (description) description.textContent = cardTranslations[index][1];
     });
 
     document.querySelectorAll("[data-home]").forEach(button => {
@@ -524,7 +530,7 @@ function applyLanguage() {
     themeOptions[0].textContent = lang.dark;
     themeOptions[1].textContent = lang.light;
 
-    if (quizStarted && quizIndex < quizQuestions.length) {
+    if (quizStarted && quizIndex < getQuizQuestions().length) {
         showQuestion();
     } else if (!quizStarted) {
         document.getElementById("question-number").textContent =
@@ -534,11 +540,8 @@ function applyLanguage() {
             `${lang.score}: 0`;
     }
 
-    if (document.getElementById("daily-fact").dataset.loaded !== "yes") {
-        showDailyFact();
-    }
+    showDailyFact();
 }
-
 
 /* =================================
    SCREEN NAVIGATION
@@ -584,8 +587,6 @@ document.getElementById("exit-button").addEventListener("click", () => {
             </div>`;
     }, 900);
 });
-
-
 /* =================================
    CAT MASCOT ANIMATION
 ================================= */
@@ -664,7 +665,6 @@ function makeCatSad() {
     }
 }
 
-
 /* =================================
    THEME SETTINGS
 ================================= */
@@ -696,7 +696,6 @@ themeSelect.addEventListener("change", event => {
     setTheme(event.target.value);
 });
 
-
 /* =================================
    QUIZ
 ================================= */
@@ -711,6 +710,8 @@ const answersElement = document.getElementById("quiz-answers");
 const feedbackElement = document.getElementById("quiz-feedback");
 const nextButton = document.getElementById("next-question");
 const retryButton = document.getElementById("retry-quiz");
+
+const correctAnswers = [2, 1, 2, 1, 2, 1, 2, 1];
 
 function getQuizQuestions() {
     return translations[currentLanguage].questions;
@@ -728,19 +729,26 @@ function startQuiz() {
 }
 
 function showQuestion() {
+    const questions = getQuizQuestions();
+
+    if (quizIndex >= questions.length) {
+        finishQuiz();
+        return;
+    }
+
     answerSelected = false;
 
     const lang = translations[currentLanguage];
-    const question = getQuizQuestions()[quizIndex];
+    const question = questions[quizIndex];
 
     document.getElementById("question-number").textContent =
-        `${lang.question} ${quizIndex + 1} / ${quizQuestions.length}`;
+        `${lang.question} ${quizIndex + 1} / ${questions.length}`;
 
     document.getElementById("quiz-score").textContent =
         `${lang.score}: ${quizScore}`;
 
     document.getElementById("quiz-progress").style.width =
-        `${(quizIndex / quizQuestions.length) * 100}%`;
+        `${(quizIndex / questions.length) * 100}%`;
 
     questionElement.textContent = question.question;
 
@@ -769,6 +777,7 @@ function selectAnswer(index, selectedButton) {
 
     const question = getQuizQuestions()[quizIndex];
     const lang = translations[currentLanguage];
+    const correctIndex = correctAnswers[quizIndex];
 
     const answerButtons =
         answersElement.querySelectorAll(".answer-option");
@@ -777,7 +786,7 @@ function selectAnswer(index, selectedButton) {
         button.disabled = true;
     });
 
-    if (index === quizQuestions[quizIndex].correct) {
+    if (index === correctIndex) {
         quizScore++;
         selectedButton.classList.add("correct");
 
@@ -785,7 +794,8 @@ function selectAnswer(index, selectedButton) {
             lang.correct + " " + question.explanation;
     } else {
         selectedButton.classList.add("wrong");
-        answerButtons[quizQuestions[quizIndex].correct].classList.add("correct");
+
+        answerButtons[correctIndex].classList.add("correct");
 
         feedbackElement.textContent =
             lang.incorrect + " " + question.explanation;
@@ -802,7 +812,7 @@ nextButton.addEventListener("click", () => {
 
     quizIndex++;
 
-    if (quizIndex < quizQuestions.length) {
+    if (quizIndex < getQuizQuestions().length) {
         showQuestion();
     } else {
         finishQuiz();
@@ -811,6 +821,7 @@ nextButton.addEventListener("click", () => {
 
 function finishQuiz() {
     const lang = translations[currentLanguage];
+    const totalQuestions = getQuizQuestions().length;
 
     questionElement.textContent = lang.completed;
     answersElement.innerHTML = "";
@@ -819,14 +830,13 @@ function finishQuiz() {
     document.getElementById("question-number").textContent = lang.finished;
 
     feedbackElement.textContent =
-        `${lang.finalScore} ${quizScore} / ${quizQuestions.length}`;
+        `${lang.finalScore} ${quizScore} / ${totalQuestions}`;
 
     nextButton.classList.add("hidden");
     retryButton.classList.remove("hidden");
 }
 
 retryButton.addEventListener("click", startQuiz);
-
 
 /* =================================
    GEMINI AI
@@ -881,7 +891,6 @@ askButton.addEventListener("click", async () => {
     }
 });
 
-
 /* =================================
    QURAN
 ================================= */
@@ -922,12 +931,10 @@ document.getElementById("load-surah").addEventListener("click", async () => {
             .join(" ");
 
     } catch (error) {
-        content.textContent = lang.quranError;
+        content.textContent = translations[currentLanguage].quranError;
         console.error(error);
     }
 });
-
-
 /* =================================
    PRAYER TIMES
 ================================= */
@@ -992,11 +999,10 @@ document.getElementById("load-prayers").addEventListener("click", async () => {
         results.dataset.loaded = "yes";
 
     } catch (error) {
-        results.textContent = lang.prayerError;
+        results.textContent = translations[currentLanguage].prayerError;
         console.error(error);
     }
 });
-
 
 /* =================================
    TASBIH
@@ -1027,7 +1033,6 @@ document.getElementById("tasbih-reset").addEventListener("click", () => {
     updateTasbih();
 });
 
-
 /* =================================
    DAILY KNOWLEDGE
 ================================= */
@@ -1044,7 +1049,6 @@ function showDailyFact() {
 }
 
 document.getElementById("new-fact").addEventListener("click", showDailyFact);
-
 
 /* =================================
    LANGUAGE SELECTOR
@@ -1065,7 +1069,6 @@ languageSelect.addEventListener("change", event => {
 
     applyLanguage();
 });
-
 
 /* =================================
    STARTUP
